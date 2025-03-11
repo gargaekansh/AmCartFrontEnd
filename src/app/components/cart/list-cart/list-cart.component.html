@@ -1,0 +1,72 @@
+<div class="container mt-4">
+    <h2>Your Cart ({{ cartCount }} items)</h2>
+  
+    <div *ngIf="cartItems.length === 0" class="alert alert-info">
+      Your cart is empty. Please add some items.
+    </div>
+  
+    <div class="row" *ngIf="cartItems.length > 0">
+      <!-- Cart Items List -->
+      <div class="col-md-8">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Product Name</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>SubTotal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of cartItems">
+              <td><img [src]="item.imgUrl" alt="Product Image" class="img-fluid small-img"></td>
+              <td>
+                <p>{{ item.name }}</p>
+                <p *ngIf="item.sizeId != ''"> Size - {{ item.sizeLabel }}</p>
+                <p *ngIf="item.colorId != ''"> Color - {{ item.colorLabel }}</p>
+              </td>
+              <td>
+                <strong *ngIf="item?.discountedPrice !== 0; else originalPriceList">
+                  ₹ {{ item?.discountedPrice | number:'1.0-0' }}
+                </strong>
+                <ng-template #originalPriceList>
+                  <strong>₹ {{ item?.price | number:'1.0-0' }}</strong>
+                </ng-template>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <button class="btn btn-outline-primary btn-sm" (click)="decreaseQuantity(item)">-</button>
+                  <span class="mx-2">{{ item.orderCount }}</span>
+                  <button class="btn btn-outline-primary btn-sm" (click)="increaseQuantity(item)">+</button>
+                </div>
+              </td>
+              <td>
+                <strong *ngIf="item?.discountedPrice !== 0; else originalPriceTotal">
+                  ₹ {{ (item.discountedPrice * item.orderCount) | number:'1.0-0' }}
+                </strong>
+                <ng-template #originalPriceTotal>
+                  <strong>₹ {{ (item.price * item.orderCount) | number:'1.0-0' }}</strong>
+                </ng-template>
+              </td>
+              <td>
+                <button class="btn btn-danger btn-sm" (click)="removeItem(item)">X</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <!-- Cart Summary -->
+      <div class="col-md-4">
+        <div class="cart-summary">
+          <h3>Order Summary</h3>
+          <p><strong>Cart Total:</strong> ₹ {{ totalPrice | number:'1.0-0' }}</p>
+          <p><strong>Shipping:</strong> ₹ {{ shipping | number:'1.0-0' }}</p>
+          <p><strong>Total Price:</strong> ₹ {{ (totalPrice + shipping) | number:'1.0-0' }}</p>
+          <button class="btn btn-success btn-lg btn-block" (click)="placeOrder()">Proceed To Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>

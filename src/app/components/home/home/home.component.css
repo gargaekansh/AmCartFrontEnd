@@ -1,0 +1,48 @@
+.margin-bottom-20
+{
+    margin-bottom: 20px;
+}
+.card-header
+{
+    background-color: #aa8b77 ;
+    color: white;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+.card {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ensures all cards have equal height */
+  }
+  
+  .card-img-top {
+    height: 200px; /* Adjust as per requirement */
+    object-fit: contain; /* Ensures image scales without distortion */
+
+  }
+  .card-img-top:hover
+  {
+    cursor: pointer;
+  }
+  .card {
+    transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+  }
+  
+  .card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Adds shadow */
+    transform: translateY(-5px); /* Lifts the card slightly */
+  }
+  
+
+  .card-body {
+    flex-grow: 1; /* Fills remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Aligns text at the bottom */
+    cursor: pointer;
+  }
+  .card-container
+  {
+    margin: 10px;
+  }
+  

@@ -1,0 +1,98 @@
+li
+{
+list-style: none;
+}
+.dropdown-wide {
+    min-width: 250px;
+  }
+  #loginbtn
+  {
+    margin-left: 20px;
+  }
+
+.navbar-brand img {
+  width: 150px; /* Adjust as needed */
+  height: auto; /* Maintain aspect ratio */
+}
+.navbar-brand img {
+  margin-right: 20px; /* Add space to the right of the logo */
+  padding: 10px; /* Add padding around the logo */
+  margin-left: 10px;
+}
+.navbar-brand {
+  display: flex;
+  align-items: center; /* Center vertically */
+}
+
+.navbar-brand img {
+  width: 100px; /* Default size */
+  height: auto;
+}
+.navbar-brand img:hover 
+{
+  cursor: pointer;
+}
+@media (max-width: 768px) {
+  .navbar-brand img {
+    width: 100px; /* Smaller size for tablets */
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-brand img {
+    width: 80px; /* Smaller size for mobile */
+  }
+}
+
+.dropdown-header
+{
+  color: #66371c;
+  font: bold;
+  font-size:medium ;
+}
+.dropdown-item
+{
+  opacity: 0.6;
+}
+.dropdown-item:hover
+{
+  opacity: 1;
+  background: white;
+  cursor: pointer;
+  font: bold;
+  font-size: large;
+}
+/* Ensure the dropdown menu is wide enough */
+.dropdown-wide {
+  width: 600px; /* Adjust as needed */
+  padding: 10px;
+}
+
+/* Flexbox layout for columns */
+.dropdown-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Adjust spacing between columns */
+}
+
+/* Each category column */
+.category-column {
+  flex: 1; /* Distribute space equally */
+  min-width: 200px; /* Minimum width for each column */
+}
+
+/* Style for subcategory lists */
+.subcategory-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.subcategory-list li {
+  margin-bottom: 5px;
+}
+
+/* Dropdown header styling */
+.dropdown-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+}

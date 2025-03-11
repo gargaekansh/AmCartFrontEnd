@@ -1,0 +1,27 @@
+<div class="container mt-4">
+    <h2 class="mb-3">Order History</h2>
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Order ID</th>
+                <th>Created On</th>
+                <th>Payment Mode</th>
+                <th>Total Cost</th>
+                <th>Items Count</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let order of orderList">
+                <td>{{ order.id }}</td>
+                <td>{{ order.createdOn | date:'short' }}</td>
+                <td>{{ order.paymentMode }}</td>
+                <td>₹{{ order.totalCost | number:'1.0-0' }}</td>
+                <td>{{ order.itemsCount }}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm" (click)="viewOrder(order.id)">View</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

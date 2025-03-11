@@ -1,0 +1,42 @@
+<app-loader *ngIf="showLoading"></app-loader>
+
+<div class="container mt-4" *ngIf="!showLoading && orderDetail?.cartItems">
+    <h3 class="mb-3">Order Details</h3>
+  
+    <div class="table-responsive" >
+      <table class="table table-bordered">
+        <thead class="table-light">
+          <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Size</th>
+            <th>Color</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of orderDetail.cartItems">
+            <td>
+              <img [src]="item.imgUrl" alt="Product Image" class="img-thumbnail" style="width: 60px; height: 60px;" (click)="goToProductDetail(item.productItemId)">
+            </td>
+            <td>
+              <strong>{{ item.brand }}</strong> - {{ item.name }}
+            </td>
+            <td>{{ item.sizeLabel || 'N/A' }}</td>
+            <td>{{ item.colorLabel || 'N/A' }}</td>
+           <td>₹{{ (item.discountedPrice || item.price) | number:'1.0-0' }}</td>
+            <td>{{ item.orderCount }}</td>
+            <td>₹{{ item.discountedPrice || item.price | number:'1.0-0'}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="d-flex justify-content-between mt-3">
+      <h5><strong>Total Items:</strong> {{ orderDetail.cartItems.length }}</h5>
+      <h5><strong>Total Cost:</strong> ₹{{ orderDetail.totalCost | number:'1.0-0' }}</h5>
+    </div>
+  </div>
+  

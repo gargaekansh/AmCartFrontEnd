@@ -1,0 +1,260 @@
+.product-detail {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+  }
+  
+  .image-section {
+    flex: 1;
+    max-width: 60%;
+  }
+  img{
+    object-fit: contain;
+  }
+  .main-image {
+    width: 100%;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+  }
+  /* Modal Background */
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Zoomed Image Container */
+.image-container {
+  width: 80%;
+  height: 80%;
+  overflow: hidden;
+  position: relative;
+  cursor: grab;
+}
+
+/* Zoomed Image */
+.zoomed-img {
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  transform: scale(2); /* Initial Zoom Level */
+  position: absolute;
+  cursor: grabbing;
+}
+
+  .main-image img {
+    width: 100%;
+    height: auto;
+    min-height: 500px;
+    transition: transform 0.3s ease;
+
+  }
+  
+  .main-image.zoomed img {
+    transform: scale(1.5);
+  }
+  
+  .thumbnails {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .thumbnail {
+    width: 80px;
+    height: 80px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  
+  .thumbnail.active {
+    border: 2px solid #007bff;
+  }
+  
+  .thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .brand-section {
+    flex: 1;
+    max-width: 40%;
+  }
+  
+  .product-name {
+    font-size: 1rem;
+    color: #8a8a8a;
+    margin: 1rem 0;
+  }
+  
+  .price {
+    font-size: 1.25rem;
+    margin: 1rem 0;
+  }
+  
+  .original-price {
+    text-decoration: line-through;
+    color: #999;
+    margin-right: 0.5rem;
+  }
+  
+  .discounted-price {
+    font-weight: bold;
+    color: #dc3545;
+  }
+  
+  .variant-buttons {
+    margin: 1rem 0;
+  }
+  
+  .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .variant-button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .selected {
+    border-color: #323639;
+    background-color: #323639;
+    color: #fff;
+  }
+  
+  .variant-button:disabled {
+    background-color: #f8f9fa;
+    color: #999;
+    cursor: not-allowed;
+  }
+  
+  .stock-quantity {
+    font-size: 0.875rem;
+    color: #dc8635;
+    margin-left: 0.5rem;
+  }
+  
+  .color-group {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .color-item {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  
+  .color-item.selected {
+    border: 2px solid #007bff;
+  }
+  
+  .color-item img {
+    object-fit: cover;
+  }
+  
+  .detaill-section {
+    margin-top: 2rem;
+  }
+  
+  .detaill-section h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .detaill-section p {
+    font-size: 1rem;
+    color: #555;
+  }
+  /* Add this CSS for zoom cursor and image size */
+  .main-image img {
+    max-height: 500px; /* Adjust as needed */
+    width: auto;
+    cursor: zoom-in;
+  }
+  
+  .zoom-cursor {
+    cursor: zoom-out;
+  }
+  
+  .color-group img {
+    max-height: 150px; /* Adjust as needed */
+    width: auto;
+  }
+  .margin-right20
+  {
+    margin-right: 20px;
+  }
+  .margin-bottom-20
+  {
+    margin-bottom: 20px;
+  }
+
+
+.card-header
+{
+    background-color: #aa8b77 ;
+    color: white;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+.card-img-top:hover
+{
+  cursor: pointer;
+}
+.card {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ensures all cards have equal height */
+  }
+  
+  .card-img-top {
+    height: 200px; /* Adjust as per requirement */
+    object-fit: contain; /* Ensures image scales without distortion */
+
+  }
+  
+  .card-body {
+    flex-grow: 1; /* Fills remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Aligns text at the bottom */
+    cursor: pointer;
+  }
+  .card-container
+  {
+    margin: 10px;
+  }
+  
+  .card {
+    transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+  }
+  
+  .card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Adds shadow */
+    transform: translateY(-5px); /* Lifts the card slightly */
+  }

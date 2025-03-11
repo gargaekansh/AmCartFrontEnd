@@ -1,0 +1,24 @@
+<div class="container mt-4">
+  <div class="row">
+    <!-- Login Form on the Left Side -->
+    <div class="col-md-6">
+      <div class="card p-3">
+      <h3>Login</h3>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <input type="text" formControlName="email" placeholder="email" class="form-control mb-2" required />
+        <input type="password" formControlName="password" placeholder="Password" class="form-control mb-2" required />
+        <button type="submit" class="btn btn-primary w-100 mb-2" [disabled]="!this.loginForm.valid" >Login</button>
+      </form>
+      
+      <p class="text-center">OR</p>
+
+      <!-- Google Sign-In Button -->
+      <asl-google-signin-button class="w-100" ></asl-google-signin-button>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card p-3">
+      <app-register-user></app-register-user>
+    </div>
+  </div>
+  

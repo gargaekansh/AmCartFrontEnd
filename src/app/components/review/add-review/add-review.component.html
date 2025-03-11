@@ -1,0 +1,31 @@
+<div class="add-review card mb-4">
+  <div class="card-body">
+    <h5 class="card-title">Add a Review</h5>
+    <form [formGroup]="reviewForm" (ngSubmit)="addReview()">
+      <div class="mb-3">
+        <label for="rating" class="form-label">Rating:</label>
+        <div class="star-rating">
+          <span 
+            *ngFor="let star of stars; let i = index" 
+            [ngClass]="{'filled': i < currentRating}" 
+            (click)="setRating(i)">
+            ★
+          </span>
+        </div>
+      
+      </div>
+
+      <div class="mb-3">
+        <label for="comment" class="form-label">Comment:</label>
+        <textarea id="comment" class="form-control" formControlName="comment" rows="3"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="upload" class="form-label">Upload Images:</label>
+        <input type="file" id="upload" class="form-control" (change)="onFileChange($event)" multiple accept=".png, .jpeg, .jpg">
+      </div>
+
+      <button type="submit" class="btn btn-primary mt-3">Submit Review</button>
+    </form>
+  </div>
+</div>

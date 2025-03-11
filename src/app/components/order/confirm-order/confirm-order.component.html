@@ -1,0 +1,96 @@
+
+<app-loader *ngIf="showLoading"></app-loader>
+
+<div class="container mt-4" *ngIf="!showLoading">
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="card shadow-lg p-4 text-center" style="max-width: 500px; border-radius: 15px;">
+          <div class="text-success">
+            <i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i>
+          </div>
+          <h2 class="mt-3 text-success">Order Placed Successfully!</h2>
+          <p class="text-muted">Thank you for your purchase. Your order details are below.</p>
+      
+          <div class="border p-3 rounded bg-light">
+            <p class="mb-1"><strong>Invoice ID:</strong> <span class="text-primary">{{orderConfirmed.invoiceId }}</span></p>
+            <p class="mb-1"><strong>Order Status:</strong> <span class="text-success">{{ orderConfirmed.orderStatus }}</span></p>
+            <p class="mb-1"><strong>Total Amount:</strong> <span class="fw-bold">₹{{ orderConfirmed.totalCost | number:'1.0-0' }}</span></p>
+          </div>
+      
+          <button class="btn btn-primary mt-4 px-4" (click)="goToHome()">Continue Shopping</button>
+        </div>
+      </div>
+      
+  
+    <div class="container mt-4">
+        <div class="row">
+          <!-- Personal Information (Left Side) -->
+          <div class="col-md-6">
+            <div class="card mb-3">
+              <div class="card-header"><strong>Personal Information</strong></div>
+              <div class="card-summary">
+                <p><strong>Name:</strong> {{ orderConfirmed.user.personalInformation.name }}</p>
+                <p><strong>Email:</strong> {{ orderConfirmed.user.personalInformation.email }}</p>
+                <p><strong>Phone:</strong> {{ orderConfirmed.user.personalInformation.phone }}</p>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Shipping Information (Right Side) -->
+          <div class="col-md-6">
+            <div class="card mb-3">
+              <div class="card-header"><strong>Shipping Information</strong></div>
+              <div class="card-summary">
+                <p><strong>Street Address:</strong> {{orderConfirmed.user.addressDetail.streetAddress }}</p>
+                <p><strong>City:</strong> {{ orderConfirmed.user.addressDetail.city }}</p>
+                <p><strong>Country:</strong> {{ orderConfirmed.user.addressDetail.country }}</p>
+                <p><strong>Zip Code:</strong> {{ orderConfirmed.user.addressDetail.zipCode }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+
+    <!-- Cart Items Table -->
+    <div *ngIf="orderConfirmed.cartItems.length > 0">
+      <h3>Order Details</h3>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>SubTotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of orderConfirmed.cartItems">
+            <td><img [src]="item.imgUrl" alt="Product Image" class="img-fluid small-img"></td>
+            <td>
+              <p>{{ item.name }}</p>
+              <p *ngIf="item.sizeId">Size - {{ item.sizeLabel }}</p>
+              <p *ngIf="item.colorId">Color - {{ item.colorLabel }}</p>
+            </td>
+            <td>
+              <strong *ngIf="item.discountedPrice !== 0; else originalPrice">
+                ₹ {{ item.discountedPrice | number:'1.0-0'}}
+              </strong>
+              <ng-template #originalPrice>
+                <strong>₹ {{ item.price | number:'1.0-0'  }}</strong>
+              </ng-template>
+            </td>
+            <td>{{ item.orderCount }}</td>
+            <td>
+              <strong *ngIf="item.discountedPrice !== 0; else originalTotal">
+                ₹ {{ (item.discountedPrice * item.orderCount) | number:'1.0-0'}}
+              </strong>
+              <ng-template #originalTotal>
+                <strong>₹ {{ (item.price * item.orderCount) | number:'1.0-0' }}</strong>
+              </ng-template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </div>    

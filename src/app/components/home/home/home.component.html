@@ -1,0 +1,96 @@
+<!-- Products Section -->
+
+<app-loader *ngIf="!isLoadingDone"></app-loader>
+
+<div class="margin-bottom-20" *ngIf="homePageData?.women && isLoadingDone">
+  <div class="card-header">
+    <h2 *ngIf="homePageData?.men">Men</h2>
+  </div>
+
+  <div class="container-fluid" *ngIf="homePageData?.men">
+    <div class="row row-cols-1 row-cols-md-6 g-4 card-container">
+      <div class="col" *ngFor="let product of homePageData.men">
+        <div class="card h-100" (click)="goToDetail(product.productItemId)">
+          <img
+            [src]="product.images[0].url"
+            [alt]="product.images[0].altText"
+            class="card-img-top img-fluid"
+          />
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ product.brand.name }}</h5>
+            <p class="card-text text-muted">
+              {{ product.name | truncate : 20 }}
+            </p>
+            <div class="product-price">
+              <span class="fw-bold text-dark price-color">
+                ₹{{
+                  product.price.discountPrice || product.price.originalPrice
+                    | number : "1.0-0"
+                }}
+              </span>
+              <span
+                class="text-muted me-2"
+                *ngIf="product.price.discountPrice > 0"
+              >
+                <del>₹{{ product.price.originalPrice | number : "1.0-0" }}</del>
+              </span>
+
+              <span
+                class="badge bg-success ms-2"
+                *ngIf="product.price.discountPrice > 0"
+              >
+                {{ calculateDiscount(product.price) | number : "1.0-0" }}% off
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="margin-bottom-20" *ngIf="homePageData?.women && isLoadingDone">
+  <div class="card-header">
+    <h2 *ngIf="homePageData?.women">Women</h2>
+  </div>
+  <div *ngIf="homePageData?.women">
+    <div class="row row-cols-1 row-cols-md-6 g-4 card-container">
+      <div class="col" *ngFor="let product of homePageData.women">
+        <div class="card h-100" (click)="goToDetail(product.productItemId)">
+          <img
+            [src]="product.images[0].url"
+            [alt]="product.images[0].altText"
+            class="card-img-top img-fluid"
+          />
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ product.brand.name }}</h5>
+            <p class="card-text text-muted">
+              {{ product.name | truncate : 20 }}
+            </p>
+            <div class="product-price">
+              <span class="fw-bold text-dark price-color">
+                ₹{{
+                  product.price.discountPrice || product.price.originalPrice
+                    | number : "1.0-0"
+                }}
+              </span>
+              <span
+                class="text-muted me-2"
+                *ngIf="product.price.discountPrice > 0"
+              >
+                <del>₹{{ product.price.originalPrice | number : "1.0-0" }}</del>
+              </span>
+
+              <span
+                class="badge bg-success ms-2"
+                *ngIf="product.price.discountPrice > 0"
+              >
+                {{ calculateDiscount(product.price) | number : "1.0-0" }}% off
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+/* List Review Component */
+.list-review .card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .list-review .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .list-review .badge {
+    font-size: 0.875rem;
+    padding: 4px 8px;
+  }
+  
+  .list-review .btn-outline-primary,
+  .list-review .btn-outline-danger {
+    font-size: 0.875rem;
+    padding: 4px 8px;
+  }
+  
+  .list-review .btn-outline-primary:hover {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .list-review .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+  }
+  
+  .list-review .text-muted {
+    font-size: 0.875rem;
+    color: #6c757d;
+  }
+  .star-rating span.filled {
+    color: gold;
+  }
+  .margin-right-10
+  {
+    margin-right: 10px;
+  }

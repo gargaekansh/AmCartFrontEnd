@@ -1,0 +1,17 @@
+<div class="search-container">
+    <input 
+      type="text" 
+      [(ngModel)]="searchQuery" 
+      (input)="onInputChange()" 
+      placeholder="Search products..."
+      class="search-input"
+    />
+  
+    <ul *ngIf="suggestions.length > 0" class="suggestions">
+      <li *ngFor="let suggestion of suggestions" 
+          (click)="selectSuggestion(suggestion)">
+        <span>{{suggestion.text}}</span>
+      </li>
+    </ul>
+  </div>
+  

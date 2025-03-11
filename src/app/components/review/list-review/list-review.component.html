@@ -1,0 +1,65 @@
+<div class="review-section">
+    
+    <div *ngFor="let review of reviews" class="review-card card mb-4">
+      <div class="card-body">
+        <!-- User Info -->
+        <div class="d-flex align-items-center mb-3">
+          <div class="mr-3">
+            <img src="assets/images/usericon.png" alt="User Avatar" class="rounded-circle" width="40" height="40">
+          </div>
+          <div>
+            <strong>{{ review.user.userName }}</strong>
+            <p class="text-muted mb-0" style="font-size: 0.85rem;">
+              Reviewed on {{ review.createdAt | date:'short' }}
+            </p>
+          </div>
+        </div>
+  
+        <!-- Rating -->
+        <div class="star-rating mb-2">
+          <span *ngFor="let star of stars; let i = index" 
+                [ngClass]="{'filled': i < review.rating}">
+            ★
+          </span>
+        </div>
+  
+        <!-- Comment -->
+        <div class="review-comment mb-3">
+          <p>{{ review.comment }}</p>
+        </div>
+  
+        <!-- Images -->
+        <div *ngIf="review.images?.length" class="mb-3">
+          <div class="row">
+            <div class="col-4" *ngFor="let image of review.images">
+              <img *ngIf="image.base64Data" [src]="'data:image/png;base64,' + image.base64Data" class="img-fluid rounded" />
+            </div>
+          </div>
+        </div>
+  
+        <!-- Likes/Dislikes -->
+        <div class="d-flex align-items-center mb-3">
+          <button class="mr-2 btn btn-sm btn btn-success margin-right-10">
+            👍 {{ review.like }}
+          </button>
+          <button class="btn btn-sm btn-danger">
+            👎 {{ review.dislike }}
+          </button>
+        </div>
+  
+        <!-- Replies -->
+        <div *ngIf="review.replies?.length" class="replies-section mt-3">
+          <h5>Replies</h5>
+          <div *ngFor="let reply of review.replies" class="card mb-2">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <strong>{{ reply.user.userName }}</strong>
+                <span class="text-muted ml-3">{{ reply.createdAt | date:'short' }}</span>
+              </div>
+              <p>{{ reply.comment }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

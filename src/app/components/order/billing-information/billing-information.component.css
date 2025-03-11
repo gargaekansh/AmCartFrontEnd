@@ -1,0 +1,36 @@
+.billing-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  .login-options {
+    text-align: center;
+  }
+  
+  .billing-details {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .personal-info, .address-info {
+    width: 48%;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f8f9fa;
+  }
+  
+  button {
+    width: 100%;
+  }
+  .margin-bottom-20
+  {
+    margin-bottom: 20px;
+  }
+  .googleBtn {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }

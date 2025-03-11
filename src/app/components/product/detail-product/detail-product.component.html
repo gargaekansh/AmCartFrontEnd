@@ -1,0 +1,416 @@
+<app-loader *ngIf="showLoading"> </app-loader>
+
+<div class="product-detail" *ngIf="productItem && !showLoading">
+  <!-- Left Side: Image Section -->
+  <div class="image-section">
+    <!-- Main Image -->
+    <div class="main-image" (click)="openImageModal()">
+      <img
+        [src]="productItem.variants.images![selectedImageIndex].url"
+        [alt]="productItem.variants.images![selectedImageIndex].altText"
+        class="img-fluid rounded"
+      />
+    </div>
+    <div class="image-modal" *ngIf="isImageZoomed" (click)="closeImageModal()">
+      <div
+        class="image-container"
+        (mousedown)="startDragging($event)"
+        (mousemove)="dragImage($event)"
+        (mouseup)="stopDragging()"
+        (mouseleave)="stopDragging()"
+      >
+        <img
+          #zoomImage
+          [src]="productItem.variants.images![selectedImageIndex].url"
+          [alt]="productItem.variants.images![selectedImageIndex].altText"
+          class="zoomed-img"
+          [style.transform]="
+            'translate(' + offsetX + 'px, ' + offsetY + 'px) scale(2)'
+          "
+        />
+      </div>
+    </div>
+
+    <!-- Thumbnails -->
+    <div class="thumbnails">
+      <div
+        *ngFor="let image of productItem.variants.images; let i = index"
+        class="thumbnail"
+        [class.active]="i === selectedImageIndex"
+        (click)="selectImage(i)"
+      >
+        <img
+          [src]="image.url"
+          [alt]="image.altText"
+          class="img-fluid rounded"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side: Product Details -->
+  <div class="brand-section">
+    <!-- Product Name -->
+    <h1>{{ productItem.product.brand.name }}</h1>
+
+    <!-- Product Description -->
+    <p class="product-name">{{ productItem.product.name }}</p>
+
+    <!-- Price -->
+    <div class="price">
+      <strong>MRP: </strong>
+      <span *ngIf="discountPrice > 0" class="original-price">
+        ₹ {{ selectedVariant.price | number : "1.0-0" }}
+      </span>
+      <span *ngIf="discountPrice > 0" class="discounted-price">
+        ₹ {{ selectedVariant.discountedPrice | number : "1.0-0" }}
+      </span>
+      <span *ngIf="discountPrice === 0">
+        ₹ {{ selectedVariant.price | number : "1.0-0" }}
+      </span>
+    </div>
+
+    <!-- Variant Buttons -->
+    <div class="variant-buttons">
+      <div *ngIf="getVariantType() === 'Size'">
+        <h3>Select Size</h3>
+        <div class="button-group">
+          <button
+            *ngFor="let button of getVariantButtons()"
+            class="btn btn-outline-secondary"
+            [class.selected]="selectedVariant.value === button.value"
+            [disabled]="button.stockQuantity <= 0"
+            (click)="onVariantSelect(button)"
+          >
+            {{ button.label }}
+            <span
+              class="stock-quantity"
+              *ngIf="button.stockQuantity > 0 && button.stockQuantity <= 5"
+            >
+              {{ button.stockQuantity }} left
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="getVariantType() === 'Color'">
+        <h3>Select Color</h3>
+        <div class="button-group">
+          <button
+            *ngFor="let button of getVariantButtons()"
+            class="btn btn-outline-secondary"
+            [class.selected]="selectedVariant.value === button.value"
+            [disabled]="button.stockQuantity <= 0"
+            (click)="onVariantSelect(button)"
+          >
+            {{ button.label }}
+            <span
+              class="stock-quantity"
+              *ngIf="button.stockQuantity > 0 && button.stockQuantity <= 5"
+            >
+              {{ button.stockQuantity }} left
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="getVariantType() === 'ColorAndSize'">
+        <h3>More Color</h3>
+        <div class="color-group">
+          <div
+            *ngFor="
+              let colorVariant of productItem.variants.sizeColorVariant;
+              let i = index
+            "
+            class="color-item"
+            [class.selected]="i === selectedColorIndex"
+            (click)="onColorSelect(i)"
+          >
+            <img
+              [src]="colorVariant.image.url"
+              [alt]="colorVariant.image.altText"
+              class="color-image img-fluid rounded"
+            />
+          </div>
+        </div>
+
+        <h3>Select Size</h3>
+        <div class="button-group">
+          <button
+            *ngFor="let button of getVariantButtons()"
+            class="btn btn-outline-secondary"
+            [class.selected]="
+              selectedVariant.value === button.value && button.value != ''
+            "
+            [disabled]="button.stockQuantity <= 0"
+            (click)="onVariantSelect(button)"
+          >
+            {{ button.label }}
+            <span
+              class="stock-quantity"
+              *ngIf="button.stockQuantity > 0 && button.stockQuantity <= 5"
+            >
+              {{ button.stockQuantity }} left
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn btn-danger btn-lg margin-right20" (click)="addToBag()">
+        <i class="bi bi-bag"></i> Add to Bag
+      </button>
+      <button
+        class="btn btn-warning btn-lg"
+        (click)="addToWishlist()"
+        [@bounce]="bounceState"
+        [disabled]="wishListAdded"
+      >
+        <i class="bi bi-heart"></i> Wishlist
+      </button>
+    </div>
+
+    <div class="detaill-section">
+      <hr />
+      <h1>Description</h1>
+      <p [innerHTML]="productItem.product.description"></p>
+    </div>
+    <div class="review-section">
+      <hr />
+      <h1>Reviews</h1>
+      <p *ngIf="!this.isLoggedIn">
+        Please login to add the review!
+        <i
+          (click)="navigateToLogin()"
+          style="cursor: pointer; text-decoration: underline"
+        >
+          Sign In</i
+        >
+      </p>
+      <button
+        *ngIf="this.isLoggedIn"
+        (click)="showAddReview()"
+        class="btn btn-sm btn-success margin-bottom-20"
+      >
+        Add Review
+      </button>
+      <div class="add-review" *ngIf="isLoggedIn && this.showAddReviewFlag">
+        <app-add-review
+          [productId]="productItem.productId"
+          [productItemId]="productItem.id"
+        ></app-add-review>
+      </div>
+      <div class="list-review">
+        <app-list-review
+          [reviews]="productItem.product.reviews"
+        ></app-list-review>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br />
+<!-- Product with Similar choices -->
+<div
+  class="margin-bottom-20"
+  *ngIf="
+    productItem?.similarSubCategory &&
+    productItem.similarSubCategory?.products?.length &&
+    !showLoading
+  "
+>
+  <div class="card-header">
+    <h2
+      *ngIf="
+        productItem?.similarSubCategory &&
+        productItem.similarSubCategory?.products?.length
+      "
+    >
+      Similar Choices
+    </h2>
+  </div>
+  <div *ngIf="productItem?.similarSubCategory">
+    <div class="row row-cols-1 row-cols-md-6 g-4 card-container">
+      <div
+        class="col"
+        *ngFor="let product of productItem.similarSubCategory?.products"
+      >
+        <div
+          class="card h-100"
+          (click)="loadProductItem(product.productItemId)"
+        >
+          <img
+            [src]="product.images[0].url"
+            [alt]="product.images[0].altText"
+            class="card-img-top img-fluid"
+          />
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ product.brand.name }}</h5>
+            <p class="card-text text-muted">
+              {{ product.name | truncate : 20 }}
+            </p>
+            <div class="product-price">
+              <span class="fw-bold text-dark price-color">
+                ₹{{
+                  product.price.discountPrice || product.price.originalPrice
+                    | number : "1.0-0"
+                }}
+              </span>
+              <span
+                class="text-muted me-2"
+                *ngIf="product.price.discountPrice > 0"
+              >
+                <del>₹{{ product.price.originalPrice | number : "1.0-0" }}</del>
+              </span>
+
+              <span
+                class="badge bg-success ms-2"
+                *ngIf="product.price.discountPrice > 0"
+              >
+                {{ calculateDiscount(product.price) | number : "1.0-0" }}% off
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br />
+<div
+  class="margin-bottom-20"
+  *ngIf="
+    productItem?.similarBrand &&
+    productItem?.similarBrand?.products?.length &&
+    !showLoading
+  "
+>
+  <div class="card-header">
+    <h2
+      *ngIf="
+        productItem?.similarBrand && productItem?.similarBrand?.products?.length
+      "
+    >
+      More from {{ productItem.similarBrand?.brand?.name }}
+    </h2>
+  </div>
+
+  <div *ngIf="productItem?.similarBrand">
+    <div class="row row-cols-1 row-cols-md-6 g-4 card-container">
+      <div
+        class="col"
+        *ngFor="let product of productItem?.similarBrand?.products"
+      >
+        <div
+          class="card h-100"
+          (click)="loadProductItem(product.productItemId)"
+        >
+          <img
+            [src]="product.images[0].url"
+            [alt]="product.images[0].altText"
+            class="card-img-top img-fluid"
+          />
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ product.brand.name }}</h5>
+            <p class="card-text text-muted">
+              {{ product.name | truncate : 20 }}
+            </p>
+            <div class="product-price">
+              <span class="fw-bold text-dark price-color">
+                ₹{{
+                  product.price.discountPrice || product.price.originalPrice
+                    | number : "1.0-0"
+                }}
+              </span>
+              <span
+                class="text-muted me-2"
+                *ngIf="product.price.discountPrice > 0"
+              >
+                <del>₹{{ product.price.originalPrice | number : "1.0-0" }}</del>
+              </span>
+
+              <span
+                class="badge bg-success ms-2"
+                *ngIf="product.price.discountPrice > 0"
+              >
+                {{ calculateDiscount(product.price) | number : "1.0-0" }}% off
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br />
+<div
+  class="margin-bottom-20"
+  style="padding: 10px"
+  *ngIf="
+    productItem?.similarCategory &&
+    productItem?.similarCategory?.products?.length &&
+    !showLoading
+  "
+>
+  <div class="card-header">
+    <h2
+      *ngIf="
+        productItem?.similarCategory &&
+        productItem?.similarCategory?.products?.length
+      "
+    >
+      More Items
+    </h2>
+  </div>
+
+  <div *ngIf="productItem?.similarCategory">
+    <div class="row row-cols-1 row-cols-md-6 g-4 card-container">
+      <div
+        class="col"
+        *ngFor="let product of productItem?.similarCategory?.products"
+      >
+        <div
+          class="card h-100"
+          (click)="loadProductItem(product.productItemId)"
+        >
+          <img
+            [src]="product.images[0].url"
+            [alt]="product.images[0].altText"
+            class="card-img-top img-fluid"
+          />
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ product.brand.name }}</h5>
+            <p class="card-text text-muted">
+              {{ product.name | truncate : 20 }}
+            </p>
+            <div class="product-price">
+              <span class="fw-bold text-dark price-color">
+                ₹{{
+                  product.price.discountPrice || product.price.originalPrice
+                    | number : "1.0-0"
+                }}
+              </span>
+              <span
+                class="text-muted me-2"
+                *ngIf="product.price.discountPrice > 0"
+              >
+                <del>₹{{ product.price.originalPrice | number : "1.0-0" }}</del>
+              </span>
+
+              <span
+                class="badge bg-success ms-2"
+                *ngIf="product.price.discountPrice > 0"
+              >
+                {{ calculateDiscount(product.price) | number : "1.0-0" }}% off
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

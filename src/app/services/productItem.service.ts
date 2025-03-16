@@ -16,7 +16,8 @@ export class ProductItemService {
   constructor(private http: HttpClient) {}
 
   addProductItem(productItem: ProductItemCommand): Observable<any> {
-    return this.http.post(`${this.apiUrl}/add`, productItem).pipe(
+    // return this.http.post(`${this.apiUrl}/add`, productItem).pipe(
+      return this.http.post(`${this.apiUrl}/CreateProduct`, productItem).pipe(
       catchError((error) => {
         console.error('Error :', error);
         return throwError(() => error);
@@ -33,7 +34,8 @@ export class ProductItemService {
   }
   getProductItemById(productItemId: string): Observable<ProductItemView> {
     return this.http
-      .get<ProductItemView>(`${this.apiUrl}/get/${productItemId}`)
+      // .get<ProductItemView>(`${this.apiUrl}/get/${productItemId}`)
+      .get<ProductItemView>(`${this.apiUrl}/${productItemId}`)
       .pipe(
         catchError((error) => {
           console.error('Error :', error);

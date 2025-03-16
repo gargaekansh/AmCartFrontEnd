@@ -1,47 +1,34 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" >
+    <a class="navbar-brand">
       <img src="assets/images/logo.svg" alt="Company Logo" [routerLink]="''">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item dropdown" *ngFor="let gender of genderKeys">
-          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            {{gender}}
+      <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item" *ngFor="let product of products">
+          <a class="nav-link" (click)="showProducts(product.slug)">
+            {{ product.name }}
           </a>
-          <ul class="dropdown-menu dropdown-wide" aria-labelledby="navbarDropdown">
-            <div class="dropdown-columns">
-              <li *ngFor="let category of categoriesByGender[gender]; let i = index" class="category-column">
-                <h6 class="dropdown-header">{{category.name}}</h6>
-                <ul class="subcategory-list">
-                  <li *ngFor="let sub of category.subCategories">
-                    <a class="dropdown-item" (click)="showProducts(sub.slug)">{{ sub.name }}</a>
-                  </li>
-                </ul>
-              </li>
-            </div>
-          </ul>
         </li>
-      </ul>
+      </ul> -->
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <app-suggestion></app-suggestion>
       </ul>
       
       <ul class="navbar-nav align-items-center">
         <!-- Wishlist Button -->
-        <li class="nav-item me-3">
-          <a class="btn btn-outline-dark  position-relative" (click)="goToWishList()">
+        <!-- <li class="nav-item me-3">
+          <a class="btn btn-outline-dark position-relative" (click)="goToWishList()">
             <i class="bi bi-heart"></i>
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="wishlistCount" style="display: none;">0</span>
           </a>
-        </li>
+        </li> -->
         
         <!-- Cart Button -->
-         <!-- Cart Button -->
-         <li class="nav-item me-3">
+        <li class="nav-item me-3">
           <a (click)="goToCart()" class="btn btn-outline-dark position-relative">
             <i class="bi bi-cart"></i>
             <!-- Update the cart count badge -->
@@ -54,7 +41,7 @@
             </span>
           </a>
         </li>
-        <app-popup-cart></app-popup-cart>
+        <!-- <app-popup-cart></app-popup-cart> -->
         <!-- Profile Dropdown -->
         <li class="nav-item dropdown">
           <a class="btn btn-outline-dark dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -62,9 +49,9 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-end dropdown-wide" aria-labelledby="profileDropdown">
             <li *ngIf="userName.length>0"> <p class="dropdown-item">Hi, {{userName}}</p></li>
-            <li><a class="dropdown-item" (click)="goToOrderList()" >Orders</a></li>
-            <li><a class="dropdown-item" (click)="goToWishList()" >Wishlist</a></li>
-            <li><hr class="dropdown-divider"></li>
+            <!-- <li><a class="dropdown-item" (click)="goToOrderList()">Orders</a></li>
+            <li><a class="dropdown-item" (click)="goToWishList()">Wishlist</a></li> -->
+            <!-- <li><hr class="dropdown-divider"></li> -->
             <li *ngIf="!isLoggedIn">
               <a class="dropdown-item" (click)="goToLogin()">Login</a>
             </li>

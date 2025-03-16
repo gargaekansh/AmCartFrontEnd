@@ -9,14 +9,14 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { VariantType } from '../../../models/enums';
 import { ProductItemService } from '../../../services/productItem.service';
-import { CartService } from '../../../services/cart.service';
+//import { CartService } from '../../../services/cart.service';
 import { CartItem } from '../../../models/cart.model';
 import { TruncatePipe } from '../../../truncate.pipe';
-import { ListReviewComponent } from '../../review/list-review/list-review.component';
-import { AddReviewComponent } from '../../review/add-review/add-review.component';
+// import { ListReviewComponent } from '../../review/list-review/list-review.component';
+// import { AddReviewComponent } from '../../review/add-review/add-review.component';
 import { AuthService } from '../../../services/auth.service';
 import { LoaderComponent } from '../../common/loader/loader.component';
-import { WishListBase } from '../../../models/wishlist.model';
+//import { WishListBase } from '../../../models/wishlist.model';
 import {
   trigger,
   state,
@@ -25,7 +25,7 @@ import {
   animate,
   keyframes,
 } from '@angular/animations';
-import { WishListService } from '../../../services/wishlist.service';
+//import { WishListService } from '../../../services/wishlist.service';
 import { error } from 'console';
 
 @Component({
@@ -35,8 +35,8 @@ import { error } from 'console';
     FormsModule,
     CommonModule,
     TruncatePipe,
-    ListReviewComponent,
-    AddReviewComponent,
+    // ListReviewComponent,
+    // AddReviewComponent,
     LoaderComponent,
   ],
   templateUrl: './detail-product.component.html',
@@ -110,10 +110,10 @@ export class DetailProductComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private productItemService: ProductItemService,
-    private cartService: CartService,
+    // private cartService: CartService,
     private router: Router,
     private authService: AuthService,
-    private wishListService: WishListService
+    // private wishListService: WishListService
   ) {}
 
   ngOnInit(): void {
@@ -438,35 +438,35 @@ export class DetailProductComponent implements OnInit {
       []
     );
   }
-  addToBag() {
-    const cartItemCopy = { ...this.cartItem };
-    this.cartService.addToCart(cartItemCopy);
-    // this.resetCartItem();
-  }
+  // addToBag() {
+  //   const cartItemCopy = { ...this.cartItem };
+  //   this.cartService.addToCart(cartItemCopy);
+  //   // this.resetCartItem();
+  // }
 
-  addToWishlist() {
-    if (this.isLoggedIn) {
-      const wishList: WishListBase = {
-        productId: this.productItem.productId,
-        productItemId: this.productItem.id,
-      };
-      this.wishListService.addToWishList(wishList).subscribe({
-        next: () => {
-          this.wishListAdded = true;
-          this.bounceState = 'bounced';
+  // addToWishlist() {
+  //   if (this.isLoggedIn) {
+  //     const wishList: WishListBase = {
+  //       productId: this.productItem.productId,
+  //       productItemId: this.productItem.id,
+  //     };
+  //     this.wishListService.addToWishList(wishList).subscribe({
+  //       next: () => {
+  //         this.wishListAdded = true;
+  //         this.bounceState = 'bounced';
 
-          setTimeout(() => {
-            this.bounceState = 'normal';
-          }, 600);
-        },
-        error: (err) => {
-          alert(err.message);
-        },
-      });
-    } else {
-      alert('You must be logged in to add into wishlist');
-    }
-  }
+  //         setTimeout(() => {
+  //           this.bounceState = 'normal';
+  //         }, 600);
+  //       },
+  //       error: (err) => {
+  //         alert(err.message);
+  //       },
+  //     });
+  //   } else {
+  //     alert('You must be logged in to add into wishlist');
+  //   }
+  // }
   resetCartItem() {
     this.cartItem.brand = '';
     this.cartItem.colorId = '';

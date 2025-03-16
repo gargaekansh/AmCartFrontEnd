@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { SearchResponse } from '../models/searchResponse.model';
 import { environment } from '../../environments/environment';
@@ -19,6 +19,9 @@ export class SearchService {
     return this.http
       .get<SearchResponse[]>(`${this.apiUrl}?query=${query}`)
       .pipe(
+        tap((response) => {
+          console.log('Search response:', response);
+        }),
         catchError((error) => {
           console.error('Error :', error);
           return throwError(() => error);

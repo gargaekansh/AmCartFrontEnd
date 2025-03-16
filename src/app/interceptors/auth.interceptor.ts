@@ -1,16 +1,23 @@
-import { Injectable } from '@angular/core';
+import { inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
 import {
-  HttpInterceptor,
+  HttpInterceptorFn,
   HttpRequest,
   HttpHandler,
-  HttpEvent,
-  HttpInterceptorFn,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const platformId = inject(PLATFORM_ID);
+  const isBrowser = isPlatformBrowser(platformId);
+
   try {
-    const authToken = localStorage.getItem('authToken');
+    let authToken: string | null = null;
+
+    // ✅ Only access localStorage in the browser
+    if (isBrowser) {
+      authToken = localStorage.getItem('authToken');
+    }
 
     if (authToken) {
       req = req.clone({
@@ -21,8 +28,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     }
 
     return next(req);
-  } catch {
-    console.log('an error has occured');
+  } catch (error) {
+    console.error('❌ Auth Interceptor Error:', error);
     return next(req);
   }
 };

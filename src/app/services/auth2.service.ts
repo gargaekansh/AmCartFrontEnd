@@ -1,10 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { OAuthService, AuthConfig, OAuthEvent } from 'angular-oauth2-oidc';
-import { HttpClient } from '@angular/common/http';
-import { from, Observable, of } from 'rxjs';
-import { filter } from 'rxjs/operators'; // ✅ Fix: Import `filter` separately
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { from, Observable, of, BehaviorSubject } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
-import { authConfig } from '../auth/auth.config'; // ✅ Import Auth Configuration
+import { authConfig, passwordGrantConfig } from '../auth/auth.config';
+import { jwtDecode } from 'jwt-decode';
+import { environment } from '../../environments/environment';
 
 /**
  * Authentication service that integrates with IdentityServer4 using OAuth2/OIDC.
@@ -14,16 +17,26 @@ import { authConfig } from '../auth/auth.config'; // ✅ Import Auth Configurati
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
-  private userProfile: any = null; // Holds user profile data
+export class IdentityServer4AuthService {
+  private userProfile: any = null;
+  private userInfoSubject = new BehaviorSubject<any>(null);
+  public userInfo$ = this.userInfoSubject.asObservable();
+  private isBrowser: boolean; // ✅ Flag for browser environment
 
   constructor(
     private oauthService: OAuthService,
     private http: HttpClient,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    @Inject(PLATFORM_ID) private platformId: object // ✅ Detects platform type
   ) {
-    this.configureAuth(); // Configure OAuth on service initialization
-    this.handleAuthEvents(); // Listen for authentication-related events
+    this.isBrowser = isPlatformBrowser(this.platformId); // ✅ Detects if running in the browser
+
+    if (this.isBrowser) {
+      this.configureAuth(); // ✅ Only configure OAuth in the browser
+      this.handleAuthEvents();
+    } else {
+      this.logger.warn('⚠️ Skipping OAuth2 initialization (not in browser)');
+    }
   }
 
   /**
@@ -31,11 +44,12 @@ export class AuthService {
    */
   private configureAuth() {
     this.logger.debug('Initializing OAuth2 authentication...');
-
-    // Apply authentication configuration from auth.config.ts
     this.oauthService.configure(authConfig);
 
-    // Automatically try login if a valid session exists
+    if (this.isBrowser) {
+      this.oauthService.setStorage(localStorage);
+    }
+
     this.oauthService
       .loadDiscoveryDocumentAndTryLogin()
       .then(() => {
@@ -52,10 +66,11 @@ export class AuthService {
   }
 
   /**
-   * Handles authentication-related events such as token updates and session termination.
+   * Handles authentication-related events.
    */
   private handleAuthEvents() {
-    // Listen for token received event and update user profile
+    if (!this.isBrowser) return; // ✅ Skip event handling in SSR
+
     this.oauthService.events
       .pipe(filter((event: OAuthEvent) => event.type === 'token_received'))
       .subscribe(() => {
@@ -63,7 +78,6 @@ export class AuthService {
         this.loadUserProfile();
       });
 
-    // Listen for session termination (logout from another tab or expired session)
     this.oauthService.events
       .pipe(filter((event: OAuthEvent) => event.type === 'session_terminated'))
       .subscribe(() => {
@@ -73,106 +87,95 @@ export class AuthService {
   }
 
   /**
-   * Initiates the login process by redirecting to the Identity Server login page.
+   * Initiates login process using password grant flow.
    */
-  login() {
+  login(username: string, password: string): Observable<any> {
+    if (!this.isBrowser) return of(null); // ✅ Prevent login in SSR
+
     this.logger.info('🔐 Starting login process...');
-    try {
-      this.oauthService.initLoginFlow();
-    } catch (error) {
-      this.logger.error('❌ Login error:', error);
-    }
+    const params = new HttpParams()
+      .set('grant_type', passwordGrantConfig.grantType)
+      .set('client_id', passwordGrantConfig.clientId)
+      .set('username', username)
+      .set('password', password)
+      .set('scope', passwordGrantConfig.scope);
+
+    return this.http.post(`${environment.identityServerURL}/connect/token`, params);
   }
 
   /**
-   * Logs out the user and clears session data.
+   * Handles login response and stores tokens.
+   */
+  handleLoginResponse(response: any) {
+    if (!this.isBrowser) return; // ✅ Prevent token storage in SSR
+
+    this.oauthService.tryLogin({
+      customHashFragment: response.access_token,
+      disableOAuth2StateCheck: true,
+    });
+
+    localStorage.setItem('authToken', response.access_token);
+    this.logger.info('✅ Login successful. Tokens stored.');
+    this.loadUserProfile();
+  }
+
+  /**
+   * Logs out the user.
    */
   logout() {
+    if (!this.isBrowser) return; // ✅ Prevent logout in SSR
+
     this.logger.info('🚪 User logging out...');
     try {
       this.oauthService.logOut();
+      localStorage.removeItem('authToken');
+      this.userInfoSubject.next(null);
     } catch (error) {
       this.logger.error('❌ Logout error:', error);
     }
   }
 
   /**
-   * Checks if the user is currently authenticated.
-   * @returns {boolean} True if the user has a valid access token.
+   * Checks if user is authenticated.
    */
-  isLoggedIn(): boolean {
-    const status = this.oauthService.hasValidAccessToken();
-    this.logger.debug(`🔎 Login status: ${status}`);
-    return status;
+  isAuthenticated(): boolean {
+    return this.isBrowser ? !!localStorage.getItem('authToken') : false;
   }
 
   /**
-   * Retrieves the stored access token.
-   * @returns {string | null} The access token if available, otherwise null.
+   * Retrieves access token.
    */
   getAccessToken(): string | null {
-    const token = this.oauthService.getAccessToken();
-    if (token) {
-      this.logger.debug('✅ Access token retrieved successfully.');
-    } else {
-      this.logger.warn('⚠️ Access token is missing or invalid.');
-    }
-    return token;
+    return this.isBrowser ? this.oauthService.getAccessToken() : null;
   }
 
   /**
-   * Loads the user's profile from the Identity Server.
+   * Loads user profile from IdentityServer.
    */
-  loadUserProfile() {
-    this.oauthService
+  loadUserProfile(): Promise<any> {
+    if (!this.isBrowser) return Promise.resolve(null); // ✅ Skip in SSR
+
+    return this.oauthService
       .loadUserProfile()
       .then((profile) => {
         this.userProfile = profile;
+        this.userInfoSubject.next(profile);
         this.logger.info('✅ User profile loaded:', profile);
+        return profile;
       })
       .catch((error) => {
         this.logger.error('❌ Failed to load user profile:', error);
+        throw error;
       });
   }
 
   /**
-   * Returns an observable for the user profile.
-   * If the profile is already loaded, returns it directly.
+   * Decodes JWT token and saves it.
    */
-  getUserProfile(): Observable<any> {
-    // If user profile is already cached, return it as an observable
-    if (this.userProfile) {
-      return of(this.userProfile);
-    }
+  decodeToken(token: string): any {
+    if (!this.isBrowser) return null; // ✅ Prevent token processing in SSR
 
-    // Otherwise, fetch it from the OAuth service and convert the promise to an observable
-    return from(
-      this.oauthService.loadUserProfile().then(
-        (profile) => {
-          this.userProfile = profile;
-          this.logger.debug('✅ User profile updated.');
-          return profile;
-        },
-        (error) => {
-          this.logger.error('❌ Error loading user profile:', error);
-          return null;
-        }
-      )
-    );
-  }
-
-  /**
-   * Refreshes the access token using the refresh token.
-   */
-  refreshToken() {
-    this.logger.info('🔄 Refreshing access token...');
-    this.oauthService
-      .refreshToken()
-      .then(() => {
-        this.logger.info('✅ Access token refreshed successfully.');
-      })
-      .catch((error) => {
-        this.logger.error('❌ Token refresh failed:', error);
-      });
+    localStorage.setItem('authToken', token);
+    return jwtDecode(token);
   }
 }

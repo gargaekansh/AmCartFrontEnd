@@ -1,4 +1,45 @@
 <!-- Products Section -->
+<app-loader *ngIf="!isLoadingDone"></app-loader>
+
+<!-- Product Categories -->
+<div class="margin-bottom-20" *ngIf="homePageData && isLoadingDone">
+  <div class="container-fluid">
+    <div *ngFor="let category of getUniqueCategories(homePageData)" class="category-section">
+      <div class="card-header">
+        <h2>{{ category | titlecase }}</h2>
+      </div>
+      <div class="row row-cols-1 row-cols-md-6 g-4 card-container">
+        <div class="col" *ngFor="let product of getProductsByCategory(category)">
+          <div class="card h-100" (click)="goToDetail(product.id.toString())">
+            
+            <img 
+              [src]="product.image"
+              [alt]="product.name"
+              class="card-img-top img-fluid"
+            />
+            <div class="card-body text-center">
+              <!-- <h5 class="card-title">Generic Brand</h5> -->
+              <p class="card-text text-muted">
+                {{ product.name | truncate : 20 }}
+              </p>
+              <div class="product-price">
+                <span class="fw-bold text-dark price-color">
+                  ₹{{ product.price | number : "1.0-0" }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- Products Section
 
 <app-loader *ngIf="!isLoadingDone"></app-loader>
 
@@ -93,4 +134,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
